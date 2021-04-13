@@ -1,0 +1,35 @@
+Restore filename
+(.+)
+\1
+
+Upper
+(.+)
+\U\1
+
+Lower
+(.+)
+\L\1\E
+
+Upper second word
+^(\w+\W+)(\w+)
+\1\U\2\E
+
+Lower first letter of second word
+^(\w+\W+)(\w+)
+\1\l\2
+
+Subtitles SPRINTER
+The.X-Files.(S\d\dE\d\d).BDRip.x264-SPRiNTER.srt
+The X-Files \1.srt
+
+Rename X-Files srt (GECKOS)
+The.X-Files.(S\d\dE\d\d).720p.BluRay.x264-GECKOS.srt
+The X-Files \1.srt
+
+Rename X-Files (pahe)
+the.x-files.s(\d\d)e(\d\d).720p.bluray.x264-pahe.in.mp4
+The X-Files S\1E\2.mp4
+
+Move to some dir
+D:/Films/The X-Files/The X-Files Season 1-9/Season 04
+c:/volatil
