@@ -9,7 +9,7 @@ from tkinter import ttk
 
 
 APP_NAME = 'regnamer'
-REG_NAME = 'regexp.txt'
+REG_NAME = os.path.join(os.path.dirname(__file__), 'regexp.txt')
 
 
 class App(tk.Tk):
@@ -21,7 +21,7 @@ class App(tk.Tk):
     def initialize(self, parent):
         # titre et icone
         self.title(APP_NAME)
-        self.iconbitmap('regnamer.ico')
+        self.iconbitmap(os.path.join(os.path.dirname(__file__), 'regnamer.ico'))
 
         # taille et position au démarrage de la fenêtre principale
         ws = self.winfo_screenwidth()
@@ -58,12 +58,13 @@ class App(tk.Tk):
         self.create_button('Refresh', None, self.on_click_refresh)
         self.create_button('Rename', None, self.on_click_rename)
 
-        # paned window to contains a frame (containing a treeview and its scrollbar) and a text
+        # paned window to contains a frame (with Treeview for filenames and Text for regexp)
         self.paned_window = tk.PanedWindow(self, orient=tk.VERTICAL)
         self.paned_window.grid(row=1, column=0, sticky=tk.W + tk.E + tk.S + tk.N)
 
         frame = tk.Frame(self.paned_window)
         self.paned_window.add(frame)
+        frame.grid_rowconfigure(0, weight=1)
         frame.grid_columnconfigure(0, weight=1)
         frame.grid_columnconfigure(1, weight=0, minsize=20)
 
@@ -321,17 +322,20 @@ def rename_names(root):
         newname = root.treeview.set(item, 'New name')
         if filename != newname:
             try:
-                os.rename(os.path.join(root.directory, filename),
-                          os.path.join(root.directory, newname))
+                if root.showpath:
+                    os.rename(filename, newname)
+                else:
+                    os.rename(os.path.join(root.directory, filename),
+                              os.path.join(root.directory, newname))
             except:
                 tk.messagebox.showerror(title='Rename error', message='Unable to rename ' + filename)
     populate_table(root, root.directory, root.treeview)
 
 
-def run():
+def main():
     app = App(None)
     app.mainloop()
 
 
 if __name__ == "__main__":
-    run()
+    main()
