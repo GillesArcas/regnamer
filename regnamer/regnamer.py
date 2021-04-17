@@ -151,7 +151,7 @@ def treeview_sort_column(tv, col, reverse):
 
 def set_cell_value(event):
     treeview = event.widget
-    root = treeview.master.master
+    root = treeview.master.master.master
     col = treeview.identify_column(event.x)
     row = treeview.identify_row(event.y)
     colnum = int(col.replace('#', ''))
@@ -186,9 +186,8 @@ def set_cell_value(event):
 class RegText(tk.Text):
     def __init__(self, parent):
         tk.Text.__init__(self, parent, wrap="none")
-        # self.grid(row=2, column=0, sticky=tk.W + tk.E + tk.S + tk.N)
-        self.bind("<Double-Button-1>", self.on_control_click_init)
-        self.bind("<Double-ButtonRelease-1>", self.on_control_click)
+        self.bind("<Double-Button-1>", self.on_double_click_init)
+        self.bind("<Double-ButtonRelease-1>", self.on_double_click_release)
         self.tag_configure("highlight", background="white", foreground="blue")
 
         with open(REG_NAME) as f:
@@ -213,17 +212,13 @@ class RegText(tk.Text):
 
         return text[line1 - 1:line2 - 1], line1, line2
 
-    def on_control_click_init(self, event):
+    def on_double_click_init(self, event):
         # Tags are applied when event handler finished. Therefore, resetting
         # the tag is delayed in the following event.
         _, line1, line2 = self.clicked_paragraph(event)
         self.tag_add("highlight", f'{line1}.0', f'{line2}.end')
 
-    def on_control_click(self, event):
-        # _, line1, line2 = self.clicked_paragraph(event)
-        # self.tag_add("highlight", f'{line1}.0', f'{line2}.end')
-        # self.update_idletasks()
-
+    def on_double_click_release(self, event):
         time.sleep(0.15)
         para, line1, line2 = self.clicked_paragraph(event)
 
@@ -322,11 +317,8 @@ def rename_names(root):
         newname = root.treeview.set(item, 'New name')
         if filename != newname:
             try:
-                if root.showpath:
-                    os.rename(filename, newname)
-                else:
-                    os.rename(os.path.join(root.directory, filename),
-                              os.path.join(root.directory, newname))
+                os.rename(os.path.join(root.directory, filename),
+                          os.path.join(root.directory, newname))
             except:
                 tk.messagebox.showerror(title='Rename error', message='Unable to rename ' + filename)
     populate_table(root, root.directory, root.treeview)
